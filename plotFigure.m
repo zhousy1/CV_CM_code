@@ -5,6 +5,7 @@ xL = zout(:,1:8); %领导者状态
 % hold on
 % plot(xL(:,5),xL(:,7))
 
+
 xF = zout(:,9:32); %跟随者状态
 xhat = zout(:,33:56);
 elta_hat = zout(:,57:end); %各跟随者对多领导者状态的分布式估计
@@ -102,6 +103,7 @@ grid on;
 view(2) 
 axis equal
 
+%% 
 
 % %% 集群个体之间的距离--测试人工势场函数的有效性
 % %%i-j之间的距离计算 
@@ -165,7 +167,7 @@ axis equal
 % ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
 % grid on
 
-%% 领导者状态观测器误差，x01,x02的估计误差
+% %% 领导者状态观测器误差，x01,x02的估计误差
 eltag1_hat = elta_hat(:,1:32);
 eltag2_hat = elta_hat(:,33:end);
 %组1 group 1
