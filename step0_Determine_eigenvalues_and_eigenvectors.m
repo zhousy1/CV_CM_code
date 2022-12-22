@@ -4,7 +4,7 @@
 %% state function
 % leaders
 A01 = [0 1; 0 0];   B01 = [0 1]';    C01 = [1 0];  %小组1-leader 01
-A02 = [0 1; -4 -4]; B02 = [0 1]';  C02 = [1 0];  %小组2-leader 02
+A02 = [0 1; -0.001 -0.001]; B02 = [0 1]';  C02 = [1 0];  %小组2-leader 02
 
 % followers        
 % group 1

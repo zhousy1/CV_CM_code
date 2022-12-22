@@ -15,8 +15,8 @@ nF=2;   %xy轴 跟随者
 %% 模型：假设各智能体在X,Y两轴方向的模型是相同的
 % leaders
 A01 = [0 1; 0 0];   B01 = [0 1]';  C01 = [1 0];  %小组1-leader 01
-A02 = [0 1; -0.01 -0.01]; B02 = [0 1]';  C02 = [1 0];  %小组2-leader 02
-% A02 = [0 1; -1 -1]; B02 = [0 1]';  C02 = [1 0];  %小组2-leader 02
+A02 = [0 1; -0.001 -0.001]; B02 = [0 1]';  C02 = [1 0];  %小组2-leader 02
+
 %%% follower --二阶         跟随者均为二阶系统--后续试验方便 group 1: 1-2-3-4 gourp 2: 5-6-7      
 % group 1
 A1 = [0 1; -3 -3];  B1 = [0; 1]; C1 = [1 0];
@@ -34,9 +34,9 @@ X2 = [1 0;0 1]; U2=[3 3]; R2 = [1];
 X3 = [1 0]; U3=[0 1]; R3 = [0];
 X4 = [1 0]; U4=[0 1]; R4 = [0];
 
-X5 = [1 0;0 1]; U5=[0.99 0.99]; R5 = [1];
-X6 = [1 0;0 1]; U6=[0.99 0.99]; R6 = [1];
-X7 = [1 0;0 1]; U7=[1.99 1.99]; R7 = [1];
+X5 = [1 0;0 1]; U5=[0.999 0.999]; R5 = [1];
+X6 = [1 0;0 1]; U6=[0.999 0.999]; R6 = [1];
+X7 = [1 0;0 1]; U7=[1.999 1.999]; R7 = [1];
 
 %% B_bar 与B_hat
 % group 1
@@ -51,18 +51,22 @@ B6_bar=[0 1]; B6_hat=[1 0];
 B7_bar=[0 1]; B7_hat=[1 0];
 
 %% 反馈参数 K0 p0 Li K1i K2i K3i P Mi
+% mu 和LF相关 // K0与P0 和A02相关
 mu = 2;
-K0 = blkdiag(kron(eye(2), [1.7321; 1]), kron(eye(2), [1.7164; 0.9729]));
-P0 = blkdiag(kron(eye(2), [1.7321 1; 1 1.7321]), kron(eye(2), [1.5822    0.7517; 0.9729    1.6968]));
+K0 = blkdiag(kron(eye(2), [1.7321; 1]), kron(eye(2), [1.7305; 0.9973]));
+P0 = blkdiag(kron(eye(2), [1.7321 1; 1 1.7321]), kron(eye(2), [1.7305    0.9973; 0.9973    1.7285]));
 
+% K1i 和 follower的状态方程相关
 K11 = [2.5  1.5]; K12 = [2.5 1.5]; K13 = [-1]; K14 = [-1];
 K15 = [0.5 -0.5]; K16 = [0.5 -0.5]; K17 = [1.5 0.5];
 
+% L0i 和follower的状态方程相关
 L01 = [0; 1]; L02 = [0; 1]; L03 = [-1]; L04 = [-1];
 L05 = [-2;1]; L06 = [-2;1]; L07 = [-1;2];
-    
+
+% 和Ui相关，也就和A0i 相关
 K21 = [0.5 1.5]; K22 = [0.5 1.5]; K23 = [1 1]; K24 = [1 1];
-K25 = [0.49 1.49]; K26 = [0.49 1.49]; K27 = [0.49 1.49];
+K25 = [0.499 1.499]; K26 = [0.499 1.499]; K27 = [0.499 1.499];
 
 K31 = [1.0000   -1.2500]; K32 = [1.0000   -1.2500]; K33 = [-1]; K34 = [-1]; 
 K35 = [1.0000   -1.2500]; K36 = [1.0000   -1.2500]; K37 = [1.0000   -1.2500];
@@ -136,6 +140,7 @@ elta_hatg2 = elta_hat(33:end);
 %组1
 elta1_hat = elta_hatg1(1:8);    elta2_hat = elta_hatg1(9:16);
 elta3_hat = elta_hatg1(17:24);  elta4_hat = elta_hatg1(25:32);  
+
 %组2
 elta5_hat = elta_hatg2(1:8);    elta6_hat = elta_hatg2(9:16); 
 elta7_hat = elta_hatg2(17:24); 
@@ -144,7 +149,8 @@ elta7_hat = elta_hatg2(17:24);
 % u0 = [0.5*sin(t);0.5*cos(t)];  
 
 u01 = [-0.05;0.05]; 
-u02 = [1; 1];
+u02 = [0.05; 0.05];
+% u02 = [1*cos(t);1*sin(t)];
 %% 编队状态
 r1 = 3;
 r2 = 5;
@@ -186,6 +192,11 @@ B0 = blkdiag(kron(eye(2),B01),kron(eye(2),B02));
 
 f=[];
 for i = 1:7
+%     if norm(B0'*inv(P0)*elta_tlide((8*i-7):8*i)) == 0
+%         f = [f; 0];
+%     else
+%         f = [f; B0'*inv(P0)*elta_tlide((8*i-7):8*i)/(norm(B0'*inv(P0)*elta_tlide((8*i-7):8*i))+0.02)];
+%     end
     if norm(B0'*inv(P0)*elta_tlide((8*i-7):8*i)) == 0
         f = [f; 0];
     else
@@ -247,6 +258,14 @@ else
     g7 = kron(eye(2),N7')*H7/(norm(kron(eye(2),N7')*H7)); 
 end
 
+% g1 = kron(eye(2),N1')*H1/(norm(kron(eye(2),N1')*H1)+0.01); 
+% g2 = kron(eye(2),N2')*H2/(norm(kron(eye(2),N2')*H2)+0.01);  
+% g3 = kron(eye(2),N3')*H3/(norm(kron(eye(2),N3')*H3)+0.01); 
+% g4 = kron(eye(2),N4')*H4/(norm(kron(eye(2),N4')*H4)+0.01);  
+% g5 = kron(eye(2),N5')*H5/(norm(kron(eye(2),N5')*H5)+0.01); 
+% g6 = kron(eye(2),N6')*H6/(norm(kron(eye(2),N6')*H6)+0.01);  
+% g7 = kron(eye(2),N7')*H7/(norm(kron(eye(2),N7')*H7)+0.01); 
+
 delta1 = R1*g1;
 delta2 = R2*g2;
 delta3 = R3*g3;
@@ -254,10 +273,8 @@ delta4 = R4*g4;
 delta5 = R5*g5;
 delta6 = R6*g6;
 delta7 = R7*g7;
-
-
 %% 分布式观测器: Revised 修改成每个观测器，观测所有领导者的状态
-rho = 10; % 要求rho > gamma 
+rho = 2; % 要求rho > gamma 
 
 x0 = [x01; x02];
 elta1_tlide = elta1_hat - x0; elta2_tlide = elta2_hat - x0; elta3_tlide = elta3_hat - x0; elta4_tlide = elta4_hat - x0;
@@ -279,7 +296,7 @@ dx02 = kron(eye(2),A02)*xLg2+kron(eye(2),B02)*u02;
 dxL = [dx01; dx02];
 
 %%  跟随者状态方程--控制输入
-theta_bar = 6; % theta_bar >= gamma
+theta_bar = 2; % theta_bar >= gamma 这个数字需要跟随gamma值修改，略大于就行，不然会造成误差系统轻微震荡
 % theta = gamma + rho;
 
 u1 = kron(eye(2),K11)*x1_hat + kron(eye(2),K21)*(elta1_hat(1:4)+h1) - theta_bar*delta1+r1;

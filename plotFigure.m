@@ -41,6 +41,69 @@ h7= [5*sin(tout+(3-1)*2*pi/3)  5*cos(tout+(3-1)*2*pi/3)];
 %%势场函数参数
 D_cv_min=0.60;
 D_cm_max=42;
+
+% %% 集群个体之间的距离--测试人工势场函数的有效性
+%%i-j之间的距离计算 
+
+%%组1
+dist12 = yout1-yout2; dist13 = yout1-yout3 ;dist14 = yout1-yout4;
+dist23 = yout2-yout3;  dist24 = yout2-yout4 ;
+dist34 = yout3-yout4;
+
+dist12_norm = zeros(length(tout),1); 
+dist13_norm = zeros(length(tout),1); 
+dist14_norm = zeros(length(tout),1); 
+dist23_norm = zeros(length(tout),1); 
+dist24_norm = zeros(length(tout),1); 
+dist34_norm = zeros(length(tout),1); 
+
+%%%组2
+dist56 = yout5-yout6;  dist57 = yout5-yout7 ;
+dist67 = yout6-yout7;
+
+dist56_norm = zeros(length(tout),1); 
+dist57_norm = zeros(length(tout),1); 
+dist67_norm = zeros(length(tout),1); 
+
+for i=1:length(tout)
+    dist12_norm(i) = norm(dist12(i,:));
+    dist13_norm(i) = norm(dist13(i,:));
+    dist14_norm(i) = norm(dist14(i,:));
+    dist23_norm(i) = norm(dist23(i,:));
+    dist24_norm(i) = norm(dist24(i,:));
+    dist34_norm(i) = norm(dist34(i,:));
+    dist56_norm(i) = norm(dist56(i,:));
+    dist57_norm(i) = norm(dist57(i,:));
+    dist67_norm(i) = norm(dist67(i,:));
+end
+
+figure
+plot(tout,D_cv_min*ones(n,1),'--k', tout, D_cm_max*ones(n,1),'--r','LineWidth',1.2); % 画出上下界
+hold on
+
+plot(tout,dist12_norm,'b',tout,dist13_norm,'c',tout,dist14_norm,'g',...
+    tout,dist23_norm,'k',tout,dist24_norm,'m',tout,dist34_norm,'r','LineWidth',1);  % 画出个体之间的距离
+
+legend('$d_{ca,min}$','$d_{cm,max}$','$d_{12}$','$d_{13}$','$d_{14}$','$d_{23}$','$d_{24}$','$d_{34}$','interpreter','latex','Location','northeast');
+grid on
+xlabel('$t/s$','interpreter','latex','FontName','Times New Roman','FontSize',14);
+ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
+max(dist13_norm)
+
+min(dist57_norm)
+% min(dist56_norm)
+
+% figure
+% plot(tout,D_cv_min*ones(n,1),'--k','LineWidth',1); % 因为没达到上界，画出下界
+% hold on
+% plot(tout,dist56_norm,'b',tout,dist57_norm,'c',tout,dist67_norm,'g',...
+%     'LineWidth',1);  % 画出个体之间的距离
+% 
+% legend('$d_{cv,min}$','$d_{56}$','$d_{57}$','$d_{67}$','interpreter','latex','Location','northeast');
+% xlabel('$t/s$','interpreter','latex','FontName','Times New Roman','FontSize',14);
+% ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
+% grid on
+
 %% 系统的状态，三维图，二维图
 figure(5)
 tt=[1,n];
@@ -62,11 +125,12 @@ for i=1:t_p
     plot3(yout01(tt(i),1),yout01(tt(i),2),zout01,'*r','MarkerSize',8,'LineWidth',1.5); %leader 1
     hold on;
     plot3(yout02(tt(i),1),yout02(tt(i),2),zout02,'*b','MarkerSize',8,'LineWidth',1.5); %leader 2
+    hold on;
     plot3(yout1(tt(i),1),yout1(tt(i),2),zout1,'sr','MarkerSize',8,'LineWidth',1.5); %follower 1
     plot3(yout2(tt(i),1),yout2(tt(i),2),zout2,'sr','MarkerSize',8,'LineWidth',1.5); %follower 2
     plot3(yout3(tt(i),1),yout3(tt(i),2),zout3,'sr','MarkerSize',8,'LineWidth',1.5); %follower 3
     plot3(yout4(tt(i),1),yout4(tt(i),2),zout4,'sr','MarkerSize',8,'LineWidth',1.5); %follower 4
-    
+
     plot3(yout5(tt(i),1),yout5(tt(i),2),zout5,'ob','MarkerSize',8,'LineWidth',1.5); %follower 5
     plot3(yout6(tt(i),1),yout6(tt(i),2),zout6,'ob','MarkerSize',8,'LineWidth',1.5); %follower 6
     plot3(yout7(tt(i),1),yout7(tt(i),2),zout7,'ob','MarkerSize',8,'LineWidth',1.5); %follower 7
@@ -82,10 +146,6 @@ for i=1:t_p
     zlabel('$Z/m$','interpreter','latex','FontName','Times New Roman','FontSize',14);
 
 end
-
-
-%%绘制整个运动轨迹
-
 plot3(yout01(:,1),yout01(:,2),zout01*ones(n,1), '--r','LineWidth',1.5); %leader 1  
 hold on;
 plot3(yout02(:,1),yout02(:,2),zout02*ones(n,1),'--b','LineWidth',1.5); %leader 2
@@ -102,70 +162,6 @@ grid on;
 
 view(2) 
 axis equal
-
-%% 
-
-% %% 集群个体之间的距离--测试人工势场函数的有效性
-% %%i-j之间的距离计算 
-
-%%%组1
-% dist12 = yout1-yout2; dist13 = yout1-yout3 ;dist14 = yout1-yout4;
-% dist23 = yout2-yout3;  dist24 = yout2-yout4 ;
-% dist34 = yout3-yout4;
-% 
-% dist12_norm = zeros(length(tout),1); 
-% dist13_norm = zeros(length(tout),1); 
-% dist14_norm = zeros(length(tout),1); 
-% dist23_norm = zeros(length(tout),1); 
-% dist24_norm = zeros(length(tout),1); 
-% dist34_norm = zeros(length(tout),1); 
-% 
-% %%%组2
-% dist56 = yout5-yout6;  dist57 = yout5-yout7 ;
-% dist67 = yout6-yout7;
-% 
-% dist56_norm = zeros(length(tout),1); 
-% dist57_norm = zeros(length(tout),1); 
-% dist67_norm = zeros(length(tout),1); 
-% 
-% for i=1:length(tout)
-%     dist12_norm(i) = norm(dist12(i,:));
-%     dist13_norm(i) = norm(dist13(i,:));
-%     dist14_norm(i) = norm(dist14(i,:));
-%     dist23_norm(i) = norm(dist23(i,:));
-%     dist24_norm(i) = norm(dist24(i,:));
-%     dist34_norm(i) = norm(dist34(i,:));
-%     dist56_norm(i) = norm(dist56(i,:));
-%     dist57_norm(i) = norm(dist57(i,:));
-%     dist67_norm(i) = norm(dist67(i,:));
-% end
-% 
-% figure
-% plot(tout,D_cv_min*ones(n,1),'--k', tout, D_cm_max*ones(n,1),'--r','LineWidth',1.2); % 画出上下界
-% hold on
-% 
-% plot(tout,dist12_norm,'b',tout,dist13_norm,'c',tout,dist14_norm,'g',...
-%     tout,dist23_norm,'k',tout,dist24_norm,'m',tout,dist34_norm,'r','LineWidth',1);  % 画出个体之间的距离
-% 
-% legend('$d_{ca,min}$','$d_{cm,max}$','$d_{12}$','$d_{13}$','$d_{14}$','$d_{23}$','$d_{24}$','$d_{34}$','interpreter','latex','Location','northeast');
-% grid on
-% xlabel('$t/s$','interpreter','latex','FontName','Times New Roman','FontSize',14);
-% ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
-% max(dist13_norm)
-% 
-% min(dist57_norm)
-% % min(dist56_norm)
-% figure
-% plot(tout,D_cv_min*ones(n,1),'--k','LineWidth',1); % 因为没达到上界，画出下界
-% hold on
-% 
-% plot(tout,dist56_norm,'b',tout,dist57_norm,'c',tout,dist67_norm,'g',...
-%     'LineWidth',1);  % 画出个体之间的距离
-% 
-% legend('$d_{cv,min}$','$d_{56}$','$d_{57}$','$d_{67}$','interpreter','latex','Location','northeast');
-% xlabel('$t/s$','interpreter','latex','FontName','Times New Roman','FontSize',14);
-% ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
-% grid on
 
 % %% 领导者状态观测器误差，x01,x02的估计误差
 eltag1_hat = elta_hat(:,1:32);
@@ -211,6 +207,7 @@ ylabel('$\left\| {{{\hat \eta }_i}} \right\|$', 'interpreter','latex','FontName'
 grid on;
 
 
+ 
 
 %% Figure 2:输出编队跟踪误差
 eout1 = yout1-yout01-h1;

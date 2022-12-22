@@ -5,19 +5,20 @@
 %%
 clc
 clear all; close all;
+
 %% 初始条件设置
-%%% 两个小组 
-%%% g1 1个leader,4个follower 
-%%% g2 1个leader 3个follower
+%%两个小组 
+%%g1 1个leader,4个follower 
+%%g2 1个leader 3个follower
  
 
-%%leaders的初始状态: 4(x+y轴) 无人机
+%leaders的初始状态: 4(x+y轴) 无人机
 x0_1 = [10,1,10,1]';
-x0_2 = [15,-1,15,-1]';
+x0_2 = [-5,1,-5,1]';
 xL0 = [x0_1;x0_2];
 
 % followers的初始状态：2*4+2*2+3*4 = 8+4+12 = 24
-r1 =5;
+r1 =15;
 r2 =5;
 x1_0 = [r1*(rand-0.5),rand-0.5,r1*(rand-0.5),rand-0.5]'; %follower 1,2 二阶 无人机
 x2_0 = [r1*(rand-0.5),rand-0.5,r1*(rand-0.5),rand-0.5]';
@@ -36,11 +37,20 @@ xhat_0 = xF0+2*(rand(24,1)-0.5);
 elta_hat01 = [x0_1; x0_2];
 elta_hat0 = kron(ones(7,1),elta_hat01) + 2*(rand(56,1)-0.5);
 
- 
-z0 = [xL0; xF0; xhat_0; elta_hat0];   % 112*1 
-% z0 = [xL0];   % 112*1 
 % load ini1.mat
+% xf0_before = z0_ini(37:60,1);
 % z0 = z0_ini;
+
+
+z0 = [xL0; xF0; xhat_0; elta_hat0];   % 112*1 
+% z0 = [xL0; xf0_before; xhat_0; elta_hat0];   % 112*1 
+
+
+group1F_ini = [x1_0;x2_0;x3_0;x4_0];
+group2F_ini = [x5_0;x6_0;x7_0];
+
+% save group1F_ini group1F_ini % save the initial state of follower in g1
+% save group2F_ini group2F_ini
 %% 微分方程求解
 t0 = 0;
 tf = 50;

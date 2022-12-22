@@ -4,7 +4,8 @@ xL = zout(:,1:8); %领导者状态
 % plot(xL(:,1),xL(:,3))
 % hold on
 % plot(xL(:,5),xL(:,7))
-%%
+
+
 xF = zout(:,9:32); %跟随者状态
 xhat = zout(:,33:56);
 elta_hat = zout(:,57:end); %各跟随者对多领导者状态的分布式估计
@@ -40,7 +41,7 @@ h7= [5*sin(tout+(3-1)*2*pi/3)  5*cos(tout+(3-1)*2*pi/3)];
 %%势场函数参数
 D_cv_min=0.60;
 D_cm_max=42;
-%% 系统的状态，三维图，二维图
+% %% 系统的状态，三维图，二维图
 figure(5)
 tt=[1,n];
 t_p=length(tt);
@@ -58,22 +59,23 @@ zout6 = 20;
 zout7 = 20;
 
 for i=1:t_p
-    plot3(yout01(tt(i),1),yout01(tt(i),2),zout01,'*r','MarkerSize',8,'LineWidth',1.5); %leader 1
-    hold on;
+%     plot3(yout01(tt(i),1),yout01(tt(i),2),zout01,'*r','MarkerSize',8,'LineWidth',1.5); %leader 1
+%     hold on;
     plot3(yout02(tt(i),1),yout02(tt(i),2),zout02,'*b','MarkerSize',8,'LineWidth',1.5); %leader 2
-    plot3(yout1(tt(i),1),yout1(tt(i),2),zout1,'sr','MarkerSize',8,'LineWidth',1.5); %follower 1
-    plot3(yout2(tt(i),1),yout2(tt(i),2),zout2,'sr','MarkerSize',8,'LineWidth',1.5); %follower 2
-    plot3(yout3(tt(i),1),yout3(tt(i),2),zout3,'sr','MarkerSize',8,'LineWidth',1.5); %follower 3
-    plot3(yout4(tt(i),1),yout4(tt(i),2),zout4,'sr','MarkerSize',8,'LineWidth',1.5); %follower 4
-    
+    hold on;
+%     plot3(yout1(tt(i),1),yout1(tt(i),2),zout1,'sr','MarkerSize',8,'LineWidth',1.5); %follower 1
+%     plot3(yout2(tt(i),1),yout2(tt(i),2),zout2,'sr','MarkerSize',8,'LineWidth',1.5); %follower 2
+%     plot3(yout3(tt(i),1),yout3(tt(i),2),zout3,'sr','MarkerSize',8,'LineWidth',1.5); %follower 3
+%     plot3(yout4(tt(i),1),yout4(tt(i),2),zout4,'sr','MarkerSize',8,'LineWidth',1.5); %follower 4
+
     plot3(yout5(tt(i),1),yout5(tt(i),2),zout5,'ob','MarkerSize',8,'LineWidth',1.5); %follower 5
     plot3(yout6(tt(i),1),yout6(tt(i),2),zout6,'ob','MarkerSize',8,'LineWidth',1.5); %follower 6
     plot3(yout7(tt(i),1),yout7(tt(i),2),zout7,'ob','MarkerSize',8,'LineWidth',1.5); %follower 7
 
-    yfg1 = [yout1(tt(i),:) zout1; yout2(tt(i),:) zout2; yout3(tt(i),:) zout3; yout4(tt(i),:) zout4; yout1(tt(i),:) zout1];
+%     yfg1 = [yout1(tt(i),:) zout1; yout2(tt(i),:) zout2; yout3(tt(i),:) zout3; yout4(tt(i),:) zout4; yout1(tt(i),:) zout1];
     yfg2 = [yout5(tt(i),:) zout5;yout6(tt(i),:) zout6;yout7(tt(i),:) zout7;yout5(tt(i),:) zout5];
     
-    plot3(yfg1(:,1),yfg1(:,2),yfg1(:,3),'-r','LineWidth',1); %画出各Follower之间的连线
+%     plot3(yfg1(:,1),yfg1(:,2),yfg1(:,3),'-r','LineWidth',1); %画出各Follower之间的连线
     plot3(yfg2(:,1),yfg2(:,2),yfg2(:,3),'-b','LineWidth',1); %画出各Follower之间的连线
     grid on;   
     xlabel('$X/m$','interpreter','latex','FontName','Times New Roman','FontSize',14);
@@ -102,6 +104,7 @@ grid on;
 view(2) 
 axis equal
 
+%% 
 
 % %% 集群个体之间的距离--测试人工势场函数的有效性
 % %%i-j之间的距离计算 
@@ -165,29 +168,7 @@ axis equal
 % ylabel('$\left\| {{d_{ij}}\left( t \right)} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
 % grid on
 
-%% 上界观测器误差 gamma_hat
-% gamma = 5;
-% gamma1_hat = gamma_hat(:,1); gamma2_hat = gamma_hat(:,2); gamma3_hat = gamma_hat(:,3); gamma4_hat = gamma_hat(:,4);
-% gamma5_hat = gamma_hat(:,5); gamma6_hat = gamma_hat(:,6); gamma7_hat = gamma_hat(:,7);
-% 
-% gamma1_e = gamma1_hat - gamma*ones(size(tout));
-% gamma2_e = gamma2_hat - gamma*ones(size(tout)); 
-% gamma3_e = gamma3_hat - gamma*ones(size(tout)); 
-% gamma4_e = gamma4_hat - gamma*ones(size(tout));
-% gamma5_e = gamma5_hat - gamma*ones(size(tout));
-% gamma6_e = gamma6_hat - gamma*ones(size(tout)); 
-% gamma7_e = gamma7_hat - gamma*ones(size(tout));
-% 
-% figure(1) %上界观测器误差
-% plot(tout,gamma1_e,'b',tout,gamma2_e,'c',tout,gamma3_e,'r',tout,gamma4_e,'-.b',...
-%     tout,gamma5_e,'m-.', tout,gamma6_e,'--k', tout,gamma7_e,'--g','LineWidth',1);
-% legend('follower 1','follower 2','follower 3','follower 4','follower 5','follower 6','follower 7','Location','northeast');
-% xlabel('$t/s$','interpreter','latex','FontName','Times New Roman','FontSize',14);
-% ylabel('$\left\| {{{\hat \eta }_i}} \right\|$', 'interpreter','latex','FontName','Times New Roman','FontSize',14);
-% grid on;
-
-
-%% 领导者状态观测器误差，x01,x02的估计误差
+% %% 领导者状态观测器误差，x01,x02的估计误差
 eltag1_hat = elta_hat(:,1:32);
 eltag2_hat = elta_hat(:,33:end);
 %组1 group 1
